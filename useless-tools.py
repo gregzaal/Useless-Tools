@@ -33,9 +33,7 @@ import bpy
 import os
 
 global obtypes
-global states
 obtypes = ['MESH', 'CURVE', 'SURFACE', 'META', 'FONT', 'ARMATURE', 'LATTICE', 'EMPTY', 'CAMERA', 'LAMP']
-states = ['-Off', '-Off', '-Off', '-Off', '-Off', '-Off', '-Off', '-Off', '-Off', '-Off']
 
 
 class UTSetSelectable(bpy.types.Operator):
