@@ -609,18 +609,24 @@ def menu_func_emptyfuncs(self, context):
 def menu_func_3dviewheader(self, context):
     layout = self.layout
 
-    col = layout.column()
-    row = col.row(align=True)
-    row.alignment = 'CENTER'
-    row.operator("ut.set_selectable", icon="RESTRICT_SELECT_ON", text="").selectable = False
-    row.operator("ut.set_selectable", icon="RESTRICT_SELECT_OFF", text="").selectable = True
-    row.operator("ut.set_renderable", icon="RESTRICT_RENDER_ON", text="").renderable = False
-    row.operator("ut.set_renderable", icon="RESTRICT_RENDER_OFF", text="").renderable = True
+    if context.mode != 'SCULPT':
+        col = layout.column()
+        row = col.row(align=True)
+        row.alignment = 'CENTER'
+        row.operator("ut.set_selectable", icon="RESTRICT_SELECT_ON", text="").selectable = False
+        row.operator("ut.set_selectable", icon="RESTRICT_SELECT_OFF", text="").selectable = True
+        row.operator("ut.set_renderable", icon="RESTRICT_RENDER_ON", text="").renderable = False
+        row.operator("ut.set_renderable", icon="RESTRICT_RENDER_OFF", text="").renderable = True
 
-    col = layout.column()
-    row = col.row(align=True)
-    row.operator("ut.all_selectable", icon="RESTRICT_SELECT_OFF", text="")
-    row.operator("ut.all_renderable", icon="RESTRICT_RENDER_OFF", text="")
+        col = layout.column()
+        row = col.row(align=True)
+        row.operator("ut.all_selectable", icon="RESTRICT_SELECT_OFF", text="")
+        row.operator("ut.all_renderable", icon="RESTRICT_RENDER_OFF", text="")
+    else:
+        col = layout.column()
+        row = col.row(align=True)
+        row.prop(context.object, 'show_wire')
+
 
     col = layout.column()
     row = col.row(align=True)
@@ -731,40 +737,6 @@ class UselessToolsPanel(bpy.types.Panel):
             row4.operator("ut.set_lens", text="50").prop=50
             row4.operator("ut.set_lens", text="70").prop=70
             row4.operator("ut.set_lens", text="100").prop=100
-
-            col.separator()
-            op = "visibility"
-            icontype = "OB_"
-            rowalign = 'RIGHT'
-            visstate = '-On-'
-            i = 0
-            x = 0
-
-            split = col.split()
-            subcol = split.column()
-
-            sub = subcol.column(align=True)
-            row = sub.row(align=True)
-            row.alignment = 'CENTER'
-            while i < 10:
-
-                if i == 5:
-                    subcol = split.column()
-                    sub = subcol.column(align=True)
-                    rowalign = 'LEFT'
-                row = sub.row(align=True)
-                row.alignment = rowalign
-                while x < 2:
-                    if x == 0:
-                        icontype = "OB_"
-                        visstate = '-On-'
-                    elif x == 1:
-                        icontype = "DATA_"
-                        visstate = '-Off'
-                    row.operator("set_" + op + ".op", icon="OUTLINER_" + icontype + obtypes[i], text="").prop = '' + obtypes[i] + visstate
-                    x += 1
-                x = 0
-                i += 1
 
         box1 = self.layout.box()
         col = box1.column(align=True)
