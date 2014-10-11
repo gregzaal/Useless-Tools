@@ -20,8 +20,8 @@ bl_info = {
     "name": "Useless Tools",
     "description": "Just a little collection of scripts and tools I use daily",
     "author": "Greg Zaal",
-    "version": (1, 0),
-    "blender": (2, 70, 0),
+    "version": (1, 1),
+    "blender": (2, 72, 0),
     "location": "Mostly 3D view toolshelf",
     "warning": "",
     "wiki_url": "",
@@ -531,11 +531,11 @@ class UTAddPositionedSuzanne(bpy.types.Operator):
 
     def execute(self, context):
         cloc = context.scene.cursor_location
-        bpy.ops.mesh.primitive_monkey_add(radius=1, view_align=False, enter_editmode=False, location=(cloc.x, cloc.y, cloc.z+0.5014), layers=(True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False))
+        bpy.ops.mesh.primitive_monkey_add(radius=1, view_align=False, enter_editmode=False, location=(cloc.x, cloc.y, cloc.z+0.4955), layers=(True, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False))
         bpy.ops.object.shade_smooth()
         bpy.ops.object.subdivision_set(level=3)
         bpy.context.object.modifiers["Subsurf"].render_levels = 3
-        bpy.context.object.rotation_euler.x = 0.9457921981811523
+        bpy.context.object.rotation_euler.x = -0.6254132986068726
 
         return {'FINISHED'}
 
