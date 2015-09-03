@@ -20,8 +20,8 @@ bl_info = {
     "name": "Useless Tools",
     "description": "Just a little collection of scripts and tools I use daily",
     "author": "Greg Zaal",
-    "version": (1, 1),
-    "blender": (2, 72, 0),
+    "version": (1, 2),
+    "blender": (2, 75, 0),
     "location": "Mostly 3D view toolshelf",
     "warning": "",
     "wiki_url": "",
@@ -521,7 +521,7 @@ class UTEmptyAlign(bpy.types.Operator):
 
 class UTAddPositionedSuzanne(bpy.types.Operator):
 
-    'Delete all unselected'
+    'Add a monkey that sits on the ground'
     bl_idname = 'ut.positioned_suz'
     bl_label = 'Positioned Suzanne'
 
@@ -536,6 +536,33 @@ class UTAddPositionedSuzanne(bpy.types.Operator):
         bpy.ops.object.subdivision_set(level=3)
         bpy.context.object.modifiers["Subsurf"].render_levels = 3
         bpy.context.object.rotation_euler.x = -0.6254132986068726
+
+        return {'FINISHED'}
+
+
+class UTDeleteNodeGroups(bpy.types.Operator):
+
+    'Disables Fake User and reloads the file. Click this several times until there are no unused groups left'
+    bl_idname = 'ut.delete_node_groups'
+    bl_label = 'Delete Unused Node Groups'
+
+    @classmethod
+    def poll(cls, context):
+        return bpy.data.filepath != "" and not bpy.data.filepath.endswith("untitled.blend")
+
+    def execute(self, context):
+        groups = bpy.data.node_groups
+
+        num_groups = len(groups)
+        num_affected = 0
+        for g in groups:
+            if g.use_fake_user:
+                g.use_fake_user = False
+                num_affected += 1
+
+        bpy.ops.wm.save_reload()
+
+        self.report({'INFO'}, ("Affected " + str(num_affected) + " of " + str(num_groups)))
 
         return {'FINISHED'}
 
@@ -760,6 +787,8 @@ class UselessToolsPanel(bpy.types.Panel):
             col.separator()
             col.operator("ut.select_ngons", icon="MOD_BEVEL")
             col.operator("ut.recalculate_normals", icon="SNAP_NORMAL")
+            col.separator()
+            col.operator("ut.delete_node_groups", icon="CANCEL", text="("+str(len(bpy.data.node_groups))+") Delete Unused Node Groups")
 
 
 def register():
