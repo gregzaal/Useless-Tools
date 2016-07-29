@@ -12,7 +12,7 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program; if not, write to the Free Software Foundation,
-#  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+#  Inc., 51 Franklin Street, Fifth reFloor, Boston, MA 02110-1301, USA.
 #
 # ##### END GPL LICENSE BLOCK #####
 
@@ -355,12 +355,13 @@ class UTRecalcNormalsObjects(bpy.types.Operator):
         oldactive = context.active_object
 
         for obj in objs:
-            context.scene.objects.active = obj
-            bpy.ops.object.editmode_toggle()
-            bpy.ops.mesh.select_all(action='SELECT')
-            bpy.ops.mesh.normals_make_consistent(inside=False)
-            bpy.ops.object.editmode_toggle()
-            self.report({'INFO'}, "Recalculated normals of " + obj.name)
+            if obj.type == 'MESH':
+                context.scene.objects.active = obj
+                bpy.ops.object.editmode_toggle()
+                bpy.ops.mesh.select_all(action='SELECT')
+                bpy.ops.mesh.normals_make_consistent(inside=False)
+                bpy.ops.object.editmode_toggle()
+                self.report({'INFO'}, "Recalculated normals of " + obj.name)
         return {'FINISHED'}
 
 
