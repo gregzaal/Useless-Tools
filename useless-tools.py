@@ -183,11 +183,10 @@ class UTOptimalDisplaySel(bpy.types.Operator):
     on = bpy.props.BoolProperty(default=False)
 
     def execute(self, context):
-        for e in bpy.context.selected_objects:
-            try:
-                e.modifiers['Subsurf'].show_only_control_edges = self.on
-            except KeyError:
-                print("No subsurf on " + e.name + " or it is not named Subsurf")
+        for o in bpy.context.selected_objects:
+            for m in o.modifiers:
+                if m.type in ['SUBSURF', 'MULTIRES']:
+                    m.show_only_control_edges = self.on
         return {'FINISHED'}
 
 
@@ -199,11 +198,10 @@ class UTOptimalDisplayAll(bpy.types.Operator):
     on = bpy.props.BoolProperty(default=False)
 
     def execute(self, context):
-        for e in bpy.data.objects:
-            try:
-                e.modifiers['Subsurf'].show_only_control_edges = self.on
-            except KeyError:
-                print("No subsurf on " + e.name + " or it is not named Subsurf")
+        for o in bpy.data.objects:
+            for m in o.modifiers:
+                if m.type in ['SUBSURF', 'MULTIRES']:
+                    m.show_only_control_edges = self.on
         return {'FINISHED'}
 
 
