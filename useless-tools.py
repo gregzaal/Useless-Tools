@@ -566,6 +566,23 @@ class UTDeleteNodeGroups(bpy.types.Operator):
         return {'FINISHED'}
 
 
+class UTCameraBroder(bpy.types.Operator):
+
+    'Use the whole camera field of view as border, to speed up viewport rendering'
+    bl_idname = 'ut.cam_border'
+    bl_label = 'Use Camera as Border'
+
+    def execute(self, context,):
+        r = context.scene.render
+        r.use_border = True
+        r.border_min_x = 0
+        r.border_min_y = 0
+        r.border_max_x = 1
+        r.border_max_y = 1
+
+        return {'FINISHED'}
+
+
 def menu_func_objspecials(self, context):
     layout = self.layout
     layout.separator()
@@ -573,6 +590,8 @@ def menu_func_objspecials(self, context):
     layout.operator("object.shade_flat", text='Shade Flat')
     layout.separator()
     layout.menu("OBJECT_MT_DrawTypeMenu")
+    layout.separator()
+    layout.operator("ut.cam_border")
 
 
 def menu_func_origintosel(self, context):
