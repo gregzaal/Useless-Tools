@@ -582,6 +582,76 @@ class UTCameraBroder(bpy.types.Operator):
 
         return {'FINISHED'}
 
+# TODO ripple delete (with multiple selections?)
+# TODO Freeze current frame (add new strip above, or cut and push stuff to the right)
+class UTSeqSpeed(bpy.types.Operator):
+
+    'Speed up or slow down the selected strips by a simple factor, adjusting the strip length as necessary'
+    bl_idname = 'ut.seq_speed'
+    bl_label = 'Simple speed control'
+    bl_options = {'REGISTER', 'UNDO'}
+    speed = bpy.props.FloatProperty(name="Speed Factor", description="A multipler for the speed. 1 is no change, >1 is faster, <1 is slower", default=1.0)
+    eocf = bpy.props.BoolProperty(name="End on current frame", description="Speed up/slow down the strip so that it ends on the current frame", default=False)
+
+    def find_empty_channel(self, sequences, strip):
+
+        def check_overlap (a, b, x, y):
+            overlaps = [x <= a and x < b and y > a and y >= b,
+                        x <= a and x < b and y > a and y <= b,
+                        x >= a and x < b and y > a and y >= b,
+                        x >= a and x < b and y > a and y <= b]
+            return any(overlaps)
+
+
+        fs = strip.frame_final_start
+        fe = strip.frame_final_end
+        channel = strip.channel + 1  # Start looking at channels above strip
+
+        found_channel = False
+        while not found_channel:
+            found_channel = True
+            for s in sequences:
+                if s.channel == channel:
+                    if check_overlap(fs, fe, s.frame_final_start, s.frame_final_end):
+                        found_channel = False
+                        channel += 1
+                        break
+            if found_channel:
+                break
+        return channel
+
+    def execute(self, context):
+        sc = context.scene
+        se = sc.sequence_editor
+
+        speed = self.speed
+
+        strips = []
+
+        for s in se.sequences:
+            if s.select:
+                strips.append(s)
+                s.select = False
+
+        for s in strips:
+            if self.eocf:
+                frame = sc.frame_current
+                start = s.frame_final_start
+                end = s.frame_final_end
+                length = s.frame_final_duration
+                if frame > start:
+                    speed = (end - start) / (frame - start)
+                else:
+                    speed = (end - start) / (end - frame)
+                    s.frame_start -= start - frame
+            channel = self.find_empty_channel(se.sequences, s)
+            ss = se.sequences.new_effect('speed', 'SPEED', channel, 1, 1, s)
+            ss.use_default_fade = False
+            ss.speed_factor = speed
+            s.frame_final_duration /= speed
+
+        return {'FINISHED'}
+
 
 def menu_func_objspecials(self, context):
     layout = self.layout
