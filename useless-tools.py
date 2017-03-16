@@ -878,6 +878,27 @@ class UselessToolsPanel(bpy.types.Panel):
             col.operator("ut.delete_node_groups", icon="CANCEL", text="("+str(len(bpy.data.node_groups))+") Delete Unused Node Groups")
 
 
+class UselessToolsAnimPanel(bpy.types.Panel):
+    bl_label = "Animation"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "object"
+
+    @classmethod
+    def poll(cls, context):
+        if context.object:
+            if hasattr(context.object, 'animation_data'):
+                if context.object.animation_data is not None:
+                    return context.object.animation_data.action is not None
+        return False
+
+    def draw(self, context):
+        obj = context.object
+
+        layout = self.layout
+        layout.prop(obj.animation_data, 'action')
+
+
 def register():
     bpy.types.Scene.UTSubSurfDrop = bpy.props.BoolProperty(
         name="Subsurf",
