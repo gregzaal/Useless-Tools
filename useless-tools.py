@@ -835,7 +835,6 @@ class UselessToolsPanel(bpy.types.Panel):
         if not VIEWPORTDROP:
             row.operator("ut.double_sided", icon="CLIPUV_DEHLT", text="").on=False
             row.operator("ut.set_lens", icon="OUTLINER_DATA_CAMERA", text="").prop=35
-            row.prop(bpy.context.user_preferences.system, "use_vertex_buffer_objects", text="")
         if VIEWPORTDROP:
             row3 = col.row(align=True)
             row3.alignment = 'CENTER'
